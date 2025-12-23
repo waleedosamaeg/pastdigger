@@ -25,6 +25,7 @@ const generateUrl = ({options})=>{
     fetching_url += "&" + `collapse=urlkey` + "&"
     fetching_url += "fl=original,timestamp"
     fetching_url += "&output=json"
+    fetching_url +="&sort=reverse"
 
     return fetching_url
 
