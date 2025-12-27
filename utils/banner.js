@@ -1,4 +1,6 @@
 import chalk from "chalk"
+import filterExtension from "./filterExtensions.js"
+import { options } from "../pastdigger.js";
 const banner = `
  _____                                                                      _____ 
 ( ___ )--------------------------------------------------------------------( ___ )
@@ -36,13 +38,16 @@ function spinner(text) {
 export const stopSpinner = spinner("Fetching URLS , please wait ...")
 
 
-export default function (opts) { 
+
+export default function (opts = options) { 
     console.log(banner)
-    // console.log()
     const item = chalk.green(`[${chalk.yellow("+")}]`) 
     console.log(item , 'target'.padEnd(20) , ":" , chalk.yellow(opts.domain))
     console.log(item , 'subdomains'.padEnd(20) , ":" , chalk.yellow(opts.subdomain || "*"))
-    console.log(item , 'ignored extentions'.padEnd(20) , ":" , chalk.yellow(opts.ignoredExtensions || process.env.EXT_BLOCKED))
+
+    // fetch the Black listed Extensions ...
+    const BlackListedExtensions = (new filterExtension()).blacklist()
+    console.log(item , 'ignored extentions'.padEnd(20) , ":" , chalk.yellow(BlackListedExtensions.join(",")))
     console.log("\n")
    
 }

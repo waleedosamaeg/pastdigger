@@ -5,25 +5,30 @@
     import {logger} from "./utils/logger.js";
     import ResultHandler from "./utils/resultHandler.js";
     import banner , {stopSpinner} from "./utils/banner.js"
+    import FitlerExtension from "./utils/filterExtensions.js";
+
 
     dotenv.config();
-    const options = args.opts();
+    export const options = args.opts();
     options.subdomain === true ? options.subdomain="*" : null
-    banner(options)
+    banner()
     let results  = ""
 
-
+ 
     const url = generateUrl({options})
     fetchUrls(url)
     .then((res) =>{ 
         results = res.response.data
         stopSpinner()
-        ResultHandler(results)
+        ResultHandler(results )
      
       
     })
     .catch((err)=>{
+        console.log(err)
         // error in request : 
+         stopSpinner()
+
         if (err.request) { 
             
             return logger.error( "UnExpected Error , check your internet Connection !")
@@ -35,5 +40,6 @@
         else { 
             return logger.error(err)
         }
+       
     })
 

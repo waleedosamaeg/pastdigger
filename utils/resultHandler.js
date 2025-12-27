@@ -1,13 +1,14 @@
 import { logger } from "./logger.js"
 import path from "path"
+import FitlerExtension from "./filterExtensions.js";
+import global from "../config/global.js";
 
-export default function ResultHandler(result) { 
+export default function ResultHandler(result ) { 
 
     
     const fields = result[0]
 
-    // execlude Extensions List 
-    const blockedExtensions = (process.env?.EXT_BLOCKED|| "" ).split(",")
+ 
     
     // convert result to real json 
     const jsonResult = []
@@ -18,6 +19,13 @@ export default function ResultHandler(result) {
             record[fields[j]] = x[j]
         }
      
+        // filter Extensions Class
+        const blackListed = new FitlerExtension(record['original'])
+        if (!blackListed.filter())  
+            {
+                global.filteredResults += 1
+                continue
+            } 
 
         // format the date of archieved page
         const year = (record.timestamp).slice(0,4)
@@ -26,14 +34,11 @@ export default function ResultHandler(result) {
 
         const date = `${year}-${month}-${day}`
         record.timestamp = date
-        // execlude the image files  -> check ext
-        let extension = path.extname(new URL(record["original"]).pathname).toLowerCase()
-   
-        if (! blockedExtensions.includes(extension.replaceAll("." , ""))) { 
-            jsonResult.push(record)
-        }
-       
+      
+     
         
+        jsonResult.push(record)
+        continue
       
         
     }
@@ -43,6 +48,7 @@ export default function ResultHandler(result) {
     for (let i of jsonResult) {
             logger.record(i.timestamp , i.original)
     }
+    // console.log( ">> filtered : ", global.filteredResults)
     return (jsonResult)
      
     

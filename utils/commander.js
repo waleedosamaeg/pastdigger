@@ -6,6 +6,7 @@ const args = program
     .requiredOption("-d, --domain <domain>" , "target domain" )
     .option("-s, --subdomain [value]" , "include specefic subdomain  * for all")
     .option("-o, --output [value]" , "output format")
+    .option("--fe, --filter-extension [value]" , 'Extensions to be ignored while fetching the results separated by comma' , undefined )
     .parse(process.argv);
 
 
